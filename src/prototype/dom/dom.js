@@ -294,6 +294,15 @@
   }
   
   /**
+   * Element.realVisible(@element) -> Boolean
+   * Tells whether `element` AND his ancestors are visible
+   */
+  
+  function realVisible(element) {
+    return element.visible() && (element.ancestors().find(function(el){return !el.visible();})  == undefined) ;
+  }
+  
+  /**
    *  Element.toggle(@element[, bool]) -> Element
    *
    *  Toggles the CSS `display` of `element`. Returns `element`.
@@ -444,10 +453,11 @@
   
   
   Object.extend(methods, {
-    visible: visible,
-    toggle:  toggle,
-    hide:    hide,
-    show:    show
+    visible:	 visible,
+    realVisible: realVisible,
+    toggle:		 toggle,
+    hide:		 hide,
+    show:		 show
   });
   
   // MANIPULATION

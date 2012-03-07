@@ -1172,6 +1172,31 @@
   }
   
   /**
+   *
+   *  Element.offsetBy(@element) -> Element.Offset
+   *
+   *  Returns the X/Y coordinates of element relative to second Element.
+   *
+  **/
+    function offsetBy(element, parent){
+		var pos = {
+			left:0,
+			top:0
+		}
+		var el = $(element);
+		if(!Object.isElement(parent) || el.up(parent.identify()) == undefined)
+			parent = $(document.body);
+		while(el != $(parent)){
+			var elOffset = el.cumulativeOffset() ;
+			var paOffset = el.up().cumulativeOffset() ;
+			pos.left += (elOffset.left - paOffset.left) ;
+			pos.top += (elOffset.top - paOffset.top) ;
+			el = el.up();
+		}
+		return  new Element.Offset(pos.left, pos.top) ;
+	}
+
+  /**
    *  Element.absolutize(@element) -> Element
    *
    *  Turns `element` into an absolutely-positioned element _without_
@@ -1253,7 +1278,29 @@
     return element;
   }
   
-
+  /**
+   *  Element.scrollToInParent(@parent, child [, options]) -> Element
+   *
+   *  Scrolls the parent frame so that `element` appears at the top of the viewport.
+   *  
+   *  
+   *  ##### Example
+   *  
+   *      $(parent).scrollToInParent(element);
+   *      // -> Element
+  **/
+  function scrollToInParent (parent, element){
+	var option = Object.extend({
+		axis:'y',
+		offset : 0,
+		duration:1
+	}, arguments[2] || {});
+	new Effect.Tween($(parent), $(parent).scrollTop, ($(element).offsetBy($(parent)).top + option.offset), option, function(p){
+		$(parent).scrollTop = p;
+	});
+	return parent ;
+}
+  
   /**
    *  Element.makePositioned(@element) -> Element
    *
@@ -1596,6 +1643,23 @@
     };
   }
   
+  /**
+   * Element.cloneMe(@element[, id]) -> Element
+   * clone all element without ID
+   * 
+  **/
+  function cloneMe(element, id){
+	var l, i = 0, el = new Element(element.nodeName);
+	while(l = this.attributes[i]){
+		if(l.name.toLowerCase() != 'id')
+			el.writeAttribute(l.name, l.nodeValue );
+		else if(id != undefined)
+			el.writeAttribute(l.name, id );
+		i++;
+	}
+	el.innerHTML = element.innerHTML ;
+	return el;
+}
   
   Element.addMethods({
     getLayout:              getLayout,
@@ -1608,14 +1672,17 @@
     positionedOffset:       positionedOffset,
     cumulativeScrollOffset: cumulativeScrollOffset,
     viewportOffset:         viewportOffset,    
+    offsetBy:               offsetBy,    
     absolutize:             absolutize,
     relativize:             relativize,
     scrollTo:               scrollTo,
+    scrollToInParent:       scrollToInParent,
     makePositioned:         makePositioned,
     undoPositioned:         undoPositioned,
     makeClipping:           makeClipping,
     undoClipping:           undoClipping,
-    clonePosition:          clonePosition
+    clonePosition:          clonePosition,
+    cloneMe:		        cloneMe
   });
   
   function isBody(element) {

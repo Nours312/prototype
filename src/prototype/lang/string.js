@@ -850,6 +850,35 @@ Object.extend(String.prototype, (function() {
   function interpolate(object, pattern) {
     return new Template(this, pattern).evaluate(object);
   }
+  
+   /**
+    * String#ltrim() -> String
+	* 
+	* erases the space at left of the string
+	* 
+	* ##### Example
+	*		'   test string '.ltrim()
+	*		//-> 'test string '
+	* 
+    */
+	function ltrim(){
+		var string = this ;
+		return string.sub(/^([\s]*)(.*)/, '#{2}') ;
+	}
+   /**
+    * String#rtrim() -> String
+	* 
+	* erases the space at right of the string
+	* 
+	* ##### Example
+	*		'   test string '.rtrim()
+	*		//-> '   test string'
+	* 
+    */
+	function rtrim(){
+		var string = this ;
+		return string.sub(/([\s]*)$/, '') ;
+	}
 
   return {
     gsub:           gsub,
@@ -883,7 +912,9 @@ Object.extend(String.prototype, (function() {
     endsWith:       endsWith,
     empty:          empty,
     blank:          blank,
-    interpolate:    interpolate
+    interpolate:    interpolate,
+    ltrim:		    ltrim,
+    rtrim:			rtrim
   };
 })());
 

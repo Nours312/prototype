@@ -605,6 +605,80 @@ Array.from = $A;
   if (!arrayProto.reduce) {
     var inject = Enumerable.inject;
   }
+  
+  
+  function toJSON(){
+	var ret = [];
+	var ar = this ;
+	ar.each(function(el){
+		if(Object.isString(el))
+			ret.push('"'+el+'"');
+		else ret.push(el.toJSON());
+	});
+	return '['+ret.join(',')+']';
+  }
+
+  /**
+   * Array#extend() -> Array
+   * 
+   * merge all Array in arguments with current
+   * 
+   * ##### Example
+   *	['1', '2'].extend(['1', '3'], ['1', '3', ['1', '3']]) ;
+   *	//-> ["1", "2", "1", "3", "1", "3", ["1", "3"]]
+   */
+  function extend(){
+	var _return = this;
+	for(var i in arguments){
+		arguments[i].each(function(l){_return.push(l);})
+	}
+	return _return ;
+  }
+  
+  /**
+   * Array#merge() -> Array
+   * 
+   * merge all Array in arguments with current
+   * 
+   * ##### Example
+   * 
+   *	['1', '2'].merge(['1', '3'], ['1', '3', ['1', '3']]);
+   *	//-> ["1", "2", "1", "3", "1", "3", "1", "3"]
+   *	
+   *	['1', '2'].merge(['1', '3'], ['1', '3', ['1', '3', ["1"]]]);
+   *	//-> ["1", "2", "1", "3", "1", "3", "1", "3", ["1"]]
+   *	
+   */
+
+  function merge(){
+	var list = [].extend.apply(this, arguments), init = [];
+	list.each(function(a){
+		if(Object.isArray(a))
+			a.each(function(e){init.push(e)});
+		else
+			init.push(a);
+	}) ;
+	return init ;
+  }
+
+  /**
+   * Array#replace(from, to) -> Array
+   * 
+   * return from replaced by to in Array
+   * 
+   * ##### Example
+   * 
+   *	['1', '2'].replace('2', '8');
+   *	//-> ["1", "8"]
+   *	
+   */
+  function replace(from, to){
+	var _return = [];
+	$A(this).each(function(l){
+		_return.push(l==from ? to : l) ;
+	});
+	return _return ;
+  }
 
   Object.extend(arrayProto, Enumerable);
 
@@ -637,7 +711,10 @@ Array.from = $A;
     clone:     clone,
     toArray:   clone,
     size:      size,
-    inspect:   inspect
+    inspect:   inspect,
+    extend:    extend,
+    merge:     merge,
+    replace:   replace
   });
 
   // fix for opera
