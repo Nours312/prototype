@@ -36,7 +36,7 @@ Object.extend(String.prototype, (function() {
   function prepareReplacement(replacement) {
     if (Object.isFunction(replacement)) return replacement;
     var template = new Template(replacement);
-    return function(match) { return template.evaluate(match) };
+    return function(match) {return template.evaluate(match)};
   }
 
   /**
@@ -386,7 +386,7 @@ Object.extend(String.prototype, (function() {
    *  an array containing the value returned by each script.
   **/
   function evalScripts() {
-    return this.extractScripts().map(function(script) { return eval(script) });
+    return this.extractScripts().map(function(script) {return eval(script)});
   }
 
   /** related to: String#unescapeHTML
@@ -879,6 +879,61 @@ Object.extend(String.prototype, (function() {
 		var string = this ;
 		return string.sub(/([\s]*)$/, '') ;
 	}
+	/**
+    * String#padString(length[, pad_string[, position]]) -> String
+	* 
+	* returns the string padded on the left, the right, or both sides to the specified padding length. 
+	* If the optional argument pad_string is not supplied, the string is padded with spaces, 
+	* otherwise it is padded with characters from pad_string up to the limit. 
+	* 
+	* ##### Example
+	* 
+	*		'test'.padString(12, '-')
+	*		//-> "test--------";
+	*		
+	*		'test'.padString(10)
+	*		//-> "test      ";
+	*		
+	*		'test'.padString(10, "0", "B")
+	*		//-> "000test000";
+	* 
+	*		'test'.padString(11, "01", "B")
+	*		//-> "101test0101";
+	* 
+    */
+	function padString ( length, string, position ){
+		var base = this ;
+		if(!string)
+			string = ' ';
+		switch (position){
+			case "left" :
+			case "L" :
+				while (base.length < length)
+					base = string+base ;
+				if(base.length > length)
+					base = base.substring(-length)
+				break ;
+			case "both" :
+			case "B" :
+				while (base.length < length)
+					base = string+base+string ;
+				if(base.length > length){
+					var dif = base.length - length ;
+					var dL = Math.round((dif/2));
+					base = base.substring(dL, length+dL);
+				}
+				break ;
+			default :
+			case "right" :
+			case "R" :
+				while (base.length < length)
+					base += string ;
+				if(base.length > length)
+					base = base.substring(0, length);
+				break ;
+		}
+		return base;
+	}
 
   return {
     gsub:           gsub,
@@ -914,7 +969,8 @@ Object.extend(String.prototype, (function() {
     blank:          blank,
     interpolate:    interpolate,
     ltrim:		    ltrim,
-    rtrim:			rtrim
+    rtrim:			rtrim,
+    padString:		padString
   };
 })());
 
