@@ -61,3 +61,11 @@ Documentation
 -------------
 
 Please see the online Prototype API: <http://api.prototypejs.org>.
+
+
+
+This FORK
+---------
+This fork is there to add functionality not found in prototype ...
+If you like, do not hesitate to ask for integrating definitely
+mail me ;)
