@@ -89,6 +89,8 @@ Object.extend(String.prototype, (function() {
   **/
   function gsub(pattern, replacement) {
     var result = '', source = this, match;
+	if(Object.isUndefined(replacement))
+		replacement = '';
     replacement = prepareReplacement(replacement);
 
     if (Object.isString(pattern))
