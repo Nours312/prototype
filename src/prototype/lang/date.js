@@ -353,7 +353,7 @@ var DateFormat = Class.create({
 		return this.setDateFromFormat(date, string);
 	},
 	setDateFromFormat : function(date, string){
-		var pattern = /([^\%]*)%(\w+)/, source = this.currentFormat, match, code, deb, currentPos = 0 ;
+		var pattern = /([^\%]*)%(\w{1})/, source = this.currentFormat, match, code, deb, currentPos = 0 ;
 		while (source.length > 0) {
 			if (match = source.match(pattern)) {
 				code = match[2];
